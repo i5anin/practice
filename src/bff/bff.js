@@ -1,29 +1,18 @@
-const generateDate = () =>
-    new Date(Math.random() * 1000000000000 + 1999999999999)
-        .toISOString()
-        .substring(0, 16)
-        .replace('T', ' ');
+import {getUser} from './get-users.js';
+import {addUser} from './add-user.js';
+import {createSession} from "react-router";
 
 
 export const server = {
     async authorize(authLogin, authPassword) {
-        const response = await fetch('http://localhost:3005/users');
-        const users = await response.json();
-
-        const user = users.find(({login}) => login === authLogin);
+        const user = await getUser(authLogin);
 
         if (!user) {
-            return {
-                error: 'Такой пользователь не найден',
-                res: null,
-            };
+            return {error: 'Такой пользователь не найден', res: null};
         }
 
         if (authPassword !== user.password) {
-            return {
-                error: 'Неверный пароль',
-                res: null,
-            };
+            return {error: 'Неверный пароль', res: null};
         }
 
         const session = {
@@ -38,41 +27,16 @@ export const server = {
             }
         };
 
-        return {
-            error: null,
-            res: session,
-        };
+        return {error: null, res: createSession(user.role_id)};
     },
 
     async register(regLogin, regPassword) {
-        const response = await fetch('http://localhost:3005/users');
-        const users = await response.json();
-
-        const user = users.find(({login}) => login === regLogin);
-
-        if (user) {
-            return {
-                error: 'Такой логин уже занят',
-                res: null,
-            };
+        const exists = await getUser(regLogin);
+        if (exists) {
+            return {error: 'Такой логин уже занят', res: null};
         }
 
-        const newUser = {
-            login: regLogin,
-            password: regPassword,
-            registed_at: generateDate(), //new Date().toISOString(), // дата регистрации
-            role_id: 2                                               // базовая роль
-        };
-
-        await fetch('http://localhost:3005/users', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json; charset=utf-8'},
-            body: JSON.stringify(newUser),
-        });
-
-        return {
-            error: null,
-            res: newUser,
-        };
+        const createdUser = await addUser(regLogin, regPassword);
+        return {error: null, res: createdUser};
     }
 };
