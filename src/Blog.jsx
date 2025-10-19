@@ -10,17 +10,20 @@ const PageWrapper = styled.div`
 `;
 
 const Content = styled.div`
-  background-color: #fff; /* Белый блок по центру */
-  width: 1000px;
-  min-height: 100vh;
-  padding: 40px;
-  box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; /* Белый блок по центру */
+    width: 1000px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 40px;
 `;
 
 const Footer = styled.footer`
-  text-align: center;
-  color: #999;
-  padding: 20px 0;
+    margin-top: auto;
+    text-align: center;
+    color: #999;
+    padding: 20px 0;
 `;
 
 const HomePage = () => <div>Главная страница</div>;
@@ -37,23 +40,21 @@ const PostPage = () => {
 
 export default function Blog() {
     return (
-        <>
-            <Header />
-            <PageWrapper>
-                <Content>
-                    <h2>Контент страницы</h2>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-                        <Route path="/users" element={<UsersPage />} />
-                        <Route path="/post" element={<NewPostPage />} />
-                        <Route path="/post/:postId" element={<PostPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                </Content>
-            </PageWrapper>
-            <Footer>Футер</Footer>
-        </>
+        <PageWrapper>
+            <Content>
+                <Header />
+                <h2>Контент страницы</h2>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/users" element={<UsersPage />} />
+                    <Route path="/post" element={<NewPostPage />} />
+                    <Route path="/post/:postId" element={<PostPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+                <Footer>Футер</Footer>
+            </Content>
+        </PageWrapper>
     );
 }
